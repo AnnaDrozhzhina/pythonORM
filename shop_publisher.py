@@ -69,10 +69,10 @@ res = s.query(Book, Shop, Sale, Publisher).join(Book).join(Stock).join(Sale).joi
 
 if i_id == 0:
     for el in res.filter(Publisher.name == i_name).all():
-        print(f' {el.Shop.name}')
+        print(f' {el.Book.title} | {el.Shop.name} | {el.Sale.price} | {el.Sale.data_sale}')
 elif i_id != 0:
     for el in res.filter(sq.or_(Publisher.name == i_name, Publisher.id == i_id)).all():
-        print(f' {el.Shop.name}')
+        print(f' {el.Book.title} | {el.Shop.name} | {el.Sale.price} | {el.Sale.data_sale}')
 
 
 
