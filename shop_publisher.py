@@ -1,5 +1,4 @@
 import sqlalchemy
-import sqlalchemy as sq
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 
@@ -61,20 +60,22 @@ s.add_all([sale1, sale2, sale3, sale4, sale5, sale6])
 s.commit()
 print(sale1, sale2, sale3)
 
-i_name = input('Введите имя publisher или None:')
-i_id = input('Введите id publisher или 0: ')
+def getshops(publisher_name_id):
+    request = s.query(Book.title, Shop.name, Sale.price, Sale.data_sale).select_from(Shop).\
+                join(Stock).\
+                join(Book).\
+                join(Publisher).\
+                join(Sale)
+    if publisher_name_id.isdigit():
+        i = request.filter(Publisher.id == publisher_name_id).all()
+    else:
+        i = request.filter(Publisher.name == publisher_name_id).all()
+    for book_title, shop_name, price, data_sale in i:
+        print(f"{book_title: <40} | {shop_name: <10} | {price: <8} | {data_sale.strftime('%d-%m-%Y')}")
 
-res = s.query(Book, Shop, Sale, Publisher).join(Book).join(Stock).join(Sale).join(Shop)
-
-
-if i_id == 0:
-    for el in res.filter(Publisher.name == i_name).all():
-        print(f' {el.Book.title} | {el.Shop.name} | {el.Sale.price} | {el.Sale.data_sale}')
-elif i_id != 0:
-    for el in res.filter(sq.or_(Publisher.name == i_name, Publisher.id == i_id)).all():
-        print(f' {el.Book.title} | {el.Shop.name} | {el.Sale.price} | {el.Sale.data_sale}')
-
-
+if __name__ == "__main__":
+    publ = input("Введите имя или id публициста: ")
+    getshops(publisher_name_id = publ)
 
 
 
